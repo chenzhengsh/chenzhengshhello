@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd ">
+
+	<context:annotation-config />
+
+	<beans>
+
+		<!-- 导入属性配置文件 -->
+		<context:property-placeholder location="classpath:mysql.properties" />
+		<!-- 声明使用注解式事务 -->
+		<bean id="dataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="${jdbc.driverClassName}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="root" />
+			<property name="password" value="" />
+		</bean>
+
+		<bean id="transactionManager"
+			class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="configLocation" value="classpath:mybatis-config.xml" />
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+
+		<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<!-- Mapper接口所在包名 -->
+			<property name="basePackage" value="com.dao" />
+		</bean>
+
+		<!-- 加入Aspectj配置 -->
+		<aop:aspectj-autoproxy />
+		<!-- <bean id="logAspect" class="com.aop.LogAspect" /> -->
+		<bean id="logAspect" class="com.aop.LogAspect" />
+		<!-- 电影业务逻辑对象 -->
+
+		<!-- 管理员业务逻辑对象 -->
+
+		<!-- 日志记录业务逻辑对象 -->
+		<bean id="logService" class="com.log.LogServiceImpl"></bean>
+		<!-- <bean id="logMapper" class="com.dao.LogMapper"></bean> -->
+	</beans>
+
+</beans>
